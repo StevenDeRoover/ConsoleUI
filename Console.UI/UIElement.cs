@@ -9,6 +9,8 @@ namespace Console.UI
     public interface IUIElement
     {
         void Render();
+
+        void Message(Console.UI.IMessage message);
     }
 
     public abstract class UIElement : IUIElement
@@ -23,7 +25,7 @@ namespace Console.UI
         /// <returns></returns>
         protected IConsoleGraphics CreateGraphics()
         {
-            return ConsoleGraphicsFactory.Build(Parent);
+            return ConsoleGraphicsFactory.Build(this);
         }
 
         internal Area GetDrawingArea(IUIElement uiElement)
@@ -35,6 +37,10 @@ namespace Console.UI
         /// Render the UI Element
         /// </summary>
         public virtual void Render()
+        {
+        }
+
+        public virtual void Message(IMessage message)
         {
         }
     }

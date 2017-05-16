@@ -46,10 +46,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Application.cs" />
+    <Compile Include="FocusManager.cs" />
     <Compile Include="IApplicationContext.cs" />
     <Compile Include="Area.cs" />
     <Compile Include="ConsoleGraphics.cs" />
     <Compile Include="Control.cs" />
+    <Compile Include="IMessage.cs" />
     <Compile Include="Location.cs" />
     <Compile Include="Offset.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

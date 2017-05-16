@@ -20,7 +20,7 @@ namespace Console.UI
         private UIElement _uiElement;
         public ConsoleGraphics(UIElement uiElement)
         {
-
+            _uiElement = uiElement;
         }
 
         private Area GetDrawingArea()
@@ -210,7 +210,7 @@ namespace Console.UI
 
     internal static class ConsoleGraphicsFactory
     {
-        public static IConsoleGraphics Build(IUIElement uiElement)
+        public static IConsoleGraphics Build(UIElement uiElement)
         {
             return new ConsoleGraphics((UIElement)uiElement);
         }
