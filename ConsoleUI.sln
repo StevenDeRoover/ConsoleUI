@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.4
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleUI", "ConsoleUI\ConsoleUI.csproj", "{ED31E7B3-5294-4AD6-9805-2D395818B002}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console.UI", "Console.UI\Console.UI.csproj", "{5BCEA226-D5AD-4E6E-8B4E-E1BE0834E5DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console.UI.Controls", "Console.UI.Controls\Console.UI.Controls.csproj", "{0F5664EA-D76B-4EA3-920B-6E12315EB22D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ED31E7B3-5294-4AD6-9805-2D395818B002}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED31E7B3-5294-4AD6-9805-2D395818B002}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED31E7B3-5294-4AD6-9805-2D395818B002}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED31E7B3-5294-4AD6-9805-2D395818B002}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BCEA226-D5AD-4E6E-8B4E-E1BE0834E5DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BCEA226-D5AD-4E6E-8B4E-E1BE0834E5DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BCEA226-D5AD-4E6E-8B4E-E1BE0834E5DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BCEA226-D5AD-4E6E-8B4E-E1BE0834E5DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F5664EA-D76B-4EA3-920B-6E12315EB22D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F5664EA-D76B-4EA3-920B-6E12315EB22D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F5664EA-D76B-4EA3-920B-6E12315EB22D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F5664EA-D76B-4EA3-920B-6E12315EB22D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
