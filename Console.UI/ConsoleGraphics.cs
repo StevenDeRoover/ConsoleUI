@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Console.UI.Drawing;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -10,42 +11,25 @@ using System.Threading.Tasks;
 
 namespace Console.UI
 {
-    public interface IConsoleGraphics
-    {
-        void FillRect(short x, short y, short width, short height, ConsoleColor color);
-    }
-
-    internal class ConsoleGraphics : IConsoleGraphics
+    public class ConsoleGraphics
     {
         private UIElement _uiElement;
-        public ConsoleGraphics(UIElement uiElement)
+        private Area _availableDrawingArea;
+
+        public short Width { get { return _availableDrawingArea.Size.Width.Amount.Value; } }
+        public short Height { get { return _availableDrawingArea.Size.Height.Amount.Value; } }
+
+        /// <summary>
+        /// private constructor not available
+        /// </summary>
+        private ConsoleGraphics()
+        { }
+        internal ConsoleGraphics(UIElement uiElement)
         {
             _uiElement = uiElement;
+            _availableDrawingArea = _uiElement.GetDrawingArea();
         }
 
-        private Area GetDrawingArea()
-        {
-            return _uiElement.Parent == null
-                ? GetConsoleDrawingArea()
-                : _uiElement.Parent.GetDrawingArea(_uiElement);
-        }
-
-        private Area GetConsoleDrawingArea()
-        {
-            return new Area()
-            {
-                Location = new Location()
-                {
-                    X = 0,
-                    Y = 0
-                },
-                Size = new Size()
-                {
-                    Width = (short)System.Console.BufferWidth,
-                    Height = (short)System.Console.BufferHeight
-                }
-            };
-        }
 
         [StructLayout(LayoutKind.Sequential)]
         private struct CHAR_INFO
@@ -93,12 +77,12 @@ namespace Console.UI
         public void FillRect(short x, short y, short width, short height, ConsoleColor backgroundColor)
         {
             IntPtr buffer = default(IntPtr);
-            var drawingArea = GetDrawingArea();
+            var area = Sum(_availableDrawingArea, new Area { LeftTop = new Point(x, y), RightBottom = new Point(width, height) });
             try
             {
-                for (short h = y; h <= (height + y - 1); h++)
+                for (short h = area.LeftTop.Y; h < area.RightBottom.Y ; h++)
                 {
-                    for (short w = x; w <= (width + x - 1); w++)
+                    for (short w = area.LeftTop.X; w < area.RightBottom.X ; w++)
                     {
                         buffer = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(CHAR_INFO)));
                         if (buffer == IntPtr.Zero)
@@ -125,8 +109,6 @@ namespace Console.UI
                             throw new Win32Exception(Marshal.GetLastWin32Error());
                         }
 
-
-
                         CHAR_INFO ci = (CHAR_INFO)Marshal.PtrToStructure(ptr, typeof(CHAR_INFO));
                         ci.charData = System.Console.OutputEncoding.GetBytes(new char[] { ' ', (char)0 });
                         ci.attributes = (short)((int)backgroundColor << 4);
@@ -140,6 +122,21 @@ namespace Console.UI
             {
                 Marshal.FreeHGlobal(buffer);
             }
+        }
+
+        private Area Sum(Area outer, Area inner)
+        {
+            return new Area
+            {
+                LeftTop = new Point(
+                     Math.Min(outer.RightBottom.X, (short)(outer.LeftTop.X + inner.LeftTop.X)),
+                     Math.Min(outer.RightBottom.Y, (short)(outer.LeftTop.Y + inner.LeftTop.Y))
+                    ),
+                RightBottom = new Point(
+                    Math.Min(outer.RightBottom.X, (short)(outer.RightBottom.X + inner.RightBottom.X)),
+                    Math.Min(outer.RightBottom.Y, (short)(outer.RightBottom.Y + inner.RightBottom.Y))
+                    )
+            };
         }
 
         private void WriteCharAt(short x, short y, char character, ConsoleColor color)
@@ -174,9 +171,9 @@ namespace Console.UI
 
 
 
-                CHAR_INFO ci = (CHAR_INFO) Marshal.PtrToStructure(ptr, typeof(CHAR_INFO));
-                ci.charData = System.Console.OutputEncoding.GetBytes(new char[] {character, (char) 0});
-                ci.attributes = (short) ((int) color >> 0);
+                CHAR_INFO ci = (CHAR_INFO)Marshal.PtrToStructure(ptr, typeof(CHAR_INFO));
+                ci.charData = System.Console.OutputEncoding.GetBytes(new char[] { character, (char)0 });
+                ci.attributes = (short)((int)color >> 0);
                 Marshal.StructureToPtr(ci, buffer, false);
                 var test = WriteConsoleOutput(stdHandle, buffer, size, coord, ref rc);
                 ptr += Marshal.SizeOf(typeof(CHAR_INFO));
@@ -191,26 +188,26 @@ namespace Console.UI
         public void DrawRect(short x, short y, short width, short height, ConsoleColor foregroundColor)
         {
 
-            var drawingArea = GetDrawingArea();
+            var drawingArea = _uiElement.GetDrawingArea();
             try
             {
                 var minHeight = y;
                 var maxHeight = height + y - 1;
                 for (short h = y; h <= (height + y - 1); h++)
                 {
-                       
+
                 }
             }
             finally
             {
-                
+
             }
         }
     }
 
     internal static class ConsoleGraphicsFactory
     {
-        public static IConsoleGraphics Build(UIElement uiElement)
+        public static ConsoleGraphics Build(UIElement uiElement)
         {
             return new ConsoleGraphics((UIElement)uiElement);
         }

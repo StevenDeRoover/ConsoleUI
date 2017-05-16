@@ -11,8 +11,7 @@ namespace Console.UI.Controls.InputControls
         public override void Render()
         {
             var g = CreateGraphics();
-            g.FillRect(this.Location.X, this.Location.Y, this.Size.Width, this.Size.Height, this.BackgroundColor);
-            //CreateGraphics().DrawRect(0,0,1,1);
+            g.FillRect(0,0, g.Width, g.Height, this.BackgroundColor);
         }
 
         public override void Message(IMessage message)

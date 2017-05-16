@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Console.UI.Controls.LayoutControls;
 using System.Threading;
 using Console = System.Console;
+using Console.UI.Drawing;
 
 namespace Console.UI.Controls
 {
@@ -15,6 +16,7 @@ namespace Console.UI.Controls
 
         public void Run()
         {
+            MainView.SetAvailableArea(Area.GetConsoleDrawingArea());
             MainView.Render();
         }
 
