@@ -52,6 +52,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Console.UI.Controls\Console.UI.Controls.csproj">
+      <Project>{0f5664ea-d76b-4ea3-920b-6e12315eb22d}</Project>
+      <Name>Console.UI.Controls</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Console.UI\Console.UI.csproj">
       <Project>{5bcea226-d5ad-4e6e-8b4e-e1be0834e5da}</Project>
       <Name>Console.UI</Name>

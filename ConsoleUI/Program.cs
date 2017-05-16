@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 using Console.UI;
+using Console.UI.Controls;
+using Console.UI.Controls.LayoutControls;
 
 namespace ConsoleUI
 {
@@ -13,7 +16,7 @@ namespace ConsoleUI
         [STAThread]
         static void Main(string[] args)
         {
-            //test app to be created 
+            Application.Run(new ApplicationContext { MainView = new View() });
         }
     }
 }
