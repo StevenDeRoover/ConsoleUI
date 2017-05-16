@@ -45,7 +45,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApplicationContext.cs" />
+    <Compile Include="IApplicationContext.cs" />
     <Compile Include="Area.cs" />
     <Compile Include="ConsoleGraphics.cs" />
     <Compile Include="Control.cs" />
