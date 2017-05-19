@@ -15,5 +15,6 @@ namespace Console.UI
     public abstract class Control : UIElement, IControl
     {
         public ConsoleColor BackgroundColor { get; set; } = ConsoleColor.Gray;
+        public ConsoleColor ForegroundColor { get; set; } = ConsoleColor.White;
     }
 }

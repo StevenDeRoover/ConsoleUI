@@ -16,7 +16,12 @@ namespace ConsoleUI
         [STAThread]
         static void Main(string[] args)
         {
-            Application.Run(new ApplicationContext { MainView = new View() });
+            Application.Run(new ApplicationContext { MainView = new View() {
+                Child = new Panel()
+                {
+                    Child = new Panel() { Title = "Test console app" }
+                }
+            } });
         }
     }
 }

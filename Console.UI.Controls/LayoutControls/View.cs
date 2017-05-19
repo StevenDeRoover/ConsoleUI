@@ -22,10 +22,11 @@ namespace Console.UI.Controls.LayoutControls
         public override void Render()
         {
             var g = CreateGraphics();
-            //g.FillRect(0,0, g.Width, g.Height);
+            
             if (Child != null)
             {
-                GetDrawingArea();
+                Child.AvailableDrawingArea = GetDrawingArea();
+                Child.Render();
             }
         }
 

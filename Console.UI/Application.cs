@@ -11,6 +11,7 @@ namespace Console.UI
     {
         public static void Run<T>(T applicationContext) where T : IApplicationContext, IFocusManager
         {
+            System.Console.CursorVisible = false;
             applicationContext.Run();
             while (true)
             {
