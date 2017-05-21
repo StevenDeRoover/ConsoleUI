@@ -1,6 +1,7 @@
 ﻿using Console.UI.Drawing;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ namespace Console.UI
         void Message(Console.UI.IMessage message);
     }
 
-    public abstract class UIElement : IUIElement
+    public abstract class UIElement : IUIElement, INotifyPropertyChanged
     {
         public UIElement Parent { get; set; }
         public Size Size { get; set; } = new Size() { Width = new Drawing.Measurement { IsStretch=true }, Height = new Drawing.Measurement { IsStretch = true } };
@@ -22,6 +23,8 @@ namespace Console.UI
         public Drawing.Margin Margin { get; set; } = new Drawing.Margin();
         public Drawing.Margin Padding { get; set; } = new Drawing.Margin();
         public Area AvailableDrawingArea { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
 
         /// <summary>
@@ -53,6 +56,11 @@ namespace Console.UI
 
         public virtual void Message(IMessage message)
         {
+        }
+
+        protected virtual void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            PropertyChanged?.Invoke(sender, e);
         }
     }
 }

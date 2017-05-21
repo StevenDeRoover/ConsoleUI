@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Console.UI;
 using Console.UI.Controls;
 using Console.UI.Controls.LayoutControls;
+using ConsoleUI.Screens;
 
 namespace ConsoleUI
 {
@@ -16,12 +17,7 @@ namespace ConsoleUI
         [STAThread]
         static void Main(string[] args)
         {
-            Application.Run(new ApplicationContext { MainView = new View() {
-                Child = new Panel()
-                {
-                    Child = new Panel() { Title = "Test console app" }
-                }
-            } });
+            Application.Run(new ApplicationContext { MainView = new MainScreen() });
         }
     }
 }
