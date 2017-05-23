@@ -75,7 +75,6 @@ namespace Console.UI
                     ci.charData = System.Console.OutputEncoding.GetBytes(new char[] { text[point.X], (char)0 });
                     ci = Native.SetForegroundColor(ci, color);
                 }
-                
 
                 return ci;
             });

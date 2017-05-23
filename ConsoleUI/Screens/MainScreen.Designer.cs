@@ -19,7 +19,7 @@ namespace ConsoleUI.Screens
             _childPanel.BackgroundColor = ConsoleColor.DarkGray;
             _childPanel.ForegroundColor = ConsoleColor.White;
             _childPanel.BorderColor = ConsoleColor.White;
-            _childPanel.Title = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum porttitor iaculis neque, eget malesuada nunc hendrerit sit amet";
+            _childPanel.Title = "New ConsoleIO example";
             //_childPanel.Title = " Test";
             this.Child = _childPanel;
         }

@@ -15,10 +15,6 @@ namespace ConsoleUI.Screens
         public MainScreen()
         {
             InitializeComponent();
-            Timer t = new Timer(new TimerCallback((obj) =>
-            {
-                //_childPanel.Title = "Test";
-            }), null, 10000, Timeout.Infinite);
         }
 
         public override void Message(IMessage message)

@@ -9,6 +9,7 @@ namespace Console.UI
 {
     public interface IApplicationContext
     {
+        event EventHandler RenderComplete;
         Task Run();
     }
 }

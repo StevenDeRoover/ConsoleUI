@@ -10,11 +10,18 @@ namespace Console.UI
 {
     public static class Application
     {
+        private static MouseIO _mouseIO = new MouseIO();
         [STAThread]
         public static void Run<T>(T applicationContext) where T : IApplicationContext, IFocusManager
         {
-            WndProc.Init();
             System.Console.CursorVisible = false;
+            WndProc.Init();
+            applicationContext.RenderComplete += (obj, e) =>
+            {
+                WndProc.Attach(_mouseIO);
+                WndProc.Attach(applicationContext);
+            };
+            
             Task.Run(async () =>
             {    
                 await applicationContext.Run();

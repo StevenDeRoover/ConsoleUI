@@ -41,6 +41,8 @@ namespace Console.UI
     {
         private MOUSE_EVENT_RECORD _record;
 
+        public short X { get { return _record.dwMousePosition.X; } }
+        public short Y { get { return _record.dwMousePosition.Y; } }
         internal MouseMessage(MOUSE_EVENT_RECORD record)
         {
             _record = record;
