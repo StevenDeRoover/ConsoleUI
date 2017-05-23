@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -10,19 +11,13 @@ using System.Threading.Tasks;
 
 namespace Console.UI.IO
 {
+    #region Structs
     [StructLayout(LayoutKind.Sequential)]
     public struct CHAR_INFO
     {
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
         public byte[] charData;
         public short attributes;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    public struct COORD
-    {
-        public short X;
-        public short Y;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -44,24 +39,97 @@ namespace Console.UI.IO
         public COORD dwMaximumWindowSize;
     }
 
+    [DebuggerDisplay("EventType: {EventType}")]
+    [StructLayout(LayoutKind.Explicit)]
+    public struct INPUT_RECORD
+    {
+        [FieldOffset(0)]
+        public Int16 EventType;
+        [FieldOffset(4)]
+        public KEY_EVENT_RECORD KeyEvent;
+        [FieldOffset(4)]
+        public MOUSE_EVENT_RECORD MouseEvent;
+    }
+
+    [DebuggerDisplay("{dwMousePosition.X}, {dwMousePosition.Y}")]
+    public struct MOUSE_EVENT_RECORD
+    {
+        public COORD dwMousePosition;
+        public Int32 dwButtonState;
+        public Int32 dwControlKeyState;
+        public Int32 dwEventFlags;
+    }
+
+    [DebuggerDisplay("{X}, {Y}")]
+    [StructLayout(LayoutKind.Sequential)]
+    public struct COORD
+    {
+        public short X;
+        public short Y;
+    }
+
+    [DebuggerDisplay("KeyCode: {wVirtualKeyCode}")]
+    [StructLayout(LayoutKind.Explicit)]
+    public struct KEY_EVENT_RECORD
+    {
+        [FieldOffset(0)]
+        [MarshalAsAttribute(UnmanagedType.Bool)]
+        public Boolean bKeyDown;
+        [FieldOffset(4)]
+        public UInt16 wRepeatCount;
+        [FieldOffset(6)]
+        public UInt16 wVirtualKeyCode;
+        [FieldOffset(8)]
+        public UInt16 wVirtualScanCode;
+        [FieldOffset(10)]
+        public Char UnicodeChar;
+        [FieldOffset(10)]
+        public Byte AsciiChar;
+        [FieldOffset(12)]
+        public Int32 dwControlKeyState;
+    };
+    #endregion
+
+    public class ConsoleHandle : SafeHandleMinusOneIsInvalid
+    {
+        public ConsoleHandle() : base(false) { }
+
+        protected override bool ReleaseHandle()
+        {
+            return true; //releasing console handle is not our business
+        }
+    }
+
     internal static class Native
     {
+        #region Constants
         public const uint GENERIC_READ = 0x80000000;
         public const uint GENERIC_WRITE = 0x40000000;
         public const int FILE_SHARE_READ = 1;
         public const int FILE_SHARE_WRITE = 2;
         public const int CONSOLE_TEXTMODE_BUFFER = 1;
+        public const int STD_INPUT_HANDLE = -10;
         public const int STD_OUTPUT_HANDLE = -11;
-       
 
+        public const Int32 ENABLE_MOUSE_INPUT = 0x0010;
+        public const Int32 ENABLE_QUICK_EDIT_MODE = 0x0040;
+        public const Int32 ENABLE_EXTENDED_FLAGS = 0x0080;
+
+        public const Int32 KEY_EVENT = 1;
+        public const Int32 MOUSE_EVENT = 2;
+        private static ConsoleHandle _consoleInputHandle;
+        private static ConsoleHandle _consoleOutputHandle;
+        #endregion
+
+        #region Imports
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool ReadConsoleOutput(IntPtr hConsoleOutput, IntPtr lpBuffer, COORD dwBufferSize, COORD dwBufferCoord, ref SMALL_RECT lpReadRegion);
 
         [DllImport("kernel32.dll", SetLastError = true)]
         public static extern bool WriteConsoleOutput(IntPtr hConsoleOutput, IntPtr lpBuffer, COORD dwBufferSize, COORD dwBufferCoord, ref SMALL_RECT lpWriteRegion);
 
-        [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern IntPtr GetStdHandle(int nStdHandle);
+        [DllImportAttribute("kernel32.dll", SetLastError = true)]
+        private static extern ConsoleHandle GetStdHandle(Int32 nStdHandle);
 
         [DllImport("Kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         public static extern SafeFileHandle CreateFile(
@@ -84,6 +152,39 @@ namespace Console.UI.IO
         IntPtr hConsoleOutput
         );
 
+        [DllImportAttribute("kernel32.dll", SetLastError = true)]
+        [return: MarshalAsAttribute(UnmanagedType.Bool)]
+        public static extern Boolean GetConsoleMode(ConsoleHandle hConsoleHandle, ref Int32 lpMode);
+
+        [DllImportAttribute("kernel32.dll", SetLastError = true)]
+        [return: MarshalAsAttribute(UnmanagedType.Bool)]
+        public static extern Boolean ReadConsoleInput(ConsoleHandle hConsoleInput, ref INPUT_RECORD lpBuffer, UInt32 nLength, ref UInt32 lpNumberOfEventsRead);
+
+        [DllImportAttribute("kernel32.dll", SetLastError = true)]
+        [return: MarshalAsAttribute(UnmanagedType.Bool)]
+        public static extern Boolean SetConsoleMode(ConsoleHandle hConsoleHandle, Int32 dwMode);
+        #endregion
+
+        #region Methods
+
+        public static ConsoleHandle GetConsoleInputHandle()
+        {
+            if (_consoleInputHandle == null)
+            {
+                _consoleInputHandle = GetStdHandle(STD_INPUT_HANDLE);
+            }
+            return _consoleInputHandle;
+        }
+
+        public static ConsoleHandle GetConsoleOutputHandle()
+        {
+            if (_consoleOutputHandle == null)
+            {
+                _consoleOutputHandle = GetStdHandle(STD_OUTPUT_HANDLE);
+            }
+            return _consoleOutputHandle;
+        }
+
         public static CHAR_INFO SetForegroundColor(CHAR_INFO charInfo, ConsoleColor color)
         {
             //charInfo.attributes &= ~(1 << 5);
@@ -97,7 +198,7 @@ namespace Console.UI.IO
         public static CHAR_INFO SetBackgroundColor(CHAR_INFO charInfo, ConsoleColor color)
         {
             charInfo.attributes = (short)(charInfo.attributes | (ushort)color << 4);
-            
+
             return charInfo;
         }
 
@@ -110,7 +211,7 @@ namespace Console.UI.IO
             IntPtr buffer = IntPtr.Zero;
             try
             {
-                var stdHandle = Native.GetStdHandle(Native.STD_OUTPUT_HANDLE);
+                var stdHandle = GetConsoleOutputHandle();
                 buffer = Marshal.AllocHGlobal(width * height * Marshal.SizeOf(typeof(CHAR_INFO)));
                 SMALL_RECT rect = new SMALL_RECT() { Left = x, Top = y, Right = (short)(x + width), Bottom = (short)(y + height) };
                 COORD leftTop = new COORD() { X = 0, Y = 0 };
@@ -118,7 +219,7 @@ namespace Console.UI.IO
 
                 if (loadFromScreen)
                 {
-                    if (!Native.ReadConsoleOutput(stdHandle, buffer, size, leftTop, ref rect))
+                    if (!Native.ReadConsoleOutput(stdHandle.DangerousGetHandle(), buffer, size, leftTop, ref rect))
                     {
                         // 'Not enough storage is available to process this command' may be raised for buffer size > 64K (see ReadConsoleOutput doc.)
                         throw new Win32Exception(Marshal.GetLastWin32Error());
@@ -139,15 +240,14 @@ namespace Console.UI.IO
                     }
                 }
 
-
-
-                Native.WriteConsoleOutput(stdHandle, buffer, size, leftTop, ref rect);
+                Native.WriteConsoleOutput(stdHandle.DangerousGetHandle(), buffer, size, leftTop, ref rect);
             }
             catch (Exception)
             {
                 throw;
             }
-            finally {
+            finally
+            {
                 Marshal.FreeHGlobal(buffer);
             }
         }
@@ -161,5 +261,6 @@ namespace Console.UI.IO
         {
             With(x, y, width, height, doAction, true);
         }
+        #endregion
     }
 }

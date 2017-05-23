@@ -15,7 +15,7 @@ namespace ConsoleUI.CustomControls
         public ConsoleColor TimeColor { get; set; }
         public override void Render()
         {
-            base.ReserveRightAreaTitle = Format.Length;
+            base.ReserveRightAreaTitle = Format.Length + 1;
             base.Render();
             
             Timer t = new Timer(new TimerCallback((obj) => {
@@ -27,6 +27,7 @@ namespace ConsoleUI.CustomControls
         {
             var g = CreateGraphics();
             var dateTimeString = DateTime.Now.ToString(Format);
+            g.FillRect((short)(g.Width - dateTimeString.Length - 1), 0, (short)dateTimeString.Length, 1, BorderColor);
             g.DrawText((short)(g.Width - dateTimeString.Length - 1), 0, dateTimeString, TimeColor);
         }
 

@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Console.UI
+namespace Console.UI.Controls.eArgs
 {
-    public interface IApplicationContext
+    public class ClosingEventArgs : EventArgs
     {
-        Task Run();
+        public bool IsDefaultPrevented { get; set; }
     }
 }

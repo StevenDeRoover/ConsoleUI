@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Console.UI.IO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,33 @@ namespace Console.UI
 
     public class KeyMessage : IKeyMessage
     {
-        public ConsoleKeyInfo KeyInfo { get; set; }
+        private KEY_EVENT_RECORD _record;
+
+        public bool KeyDown { get { return _record.bKeyDown; } }
+
+        public ushort RepeatCount { get { return _record.wRepeatCount; } }
+
+        public ConsoleKey KeyCode { get { return (ConsoleKey)_record.wVirtualKeyCode; } }
+
+        public char AsciiChar { get { return (char)_record.AsciiChar; } }
+
+        public Modifiers Modifier{ get { return (Modifiers)_record.dwControlKeyState; } }
+
+        internal KeyMessage(KEY_EVENT_RECORD record) {
+            _record = record;
+        }
+    }
+
+    public interface IMouseMessage : IMessage
+    { }
+
+    public class MouseMessage : IMouseMessage
+    {
+        private MOUSE_EVENT_RECORD _record;
+
+        internal MouseMessage(MOUSE_EVENT_RECORD record)
+        {
+            _record = record;
+        }
     }
 }

@@ -7,6 +7,7 @@ using Console.UI.Controls.LayoutControls;
 using System.Threading;
 using Console = System.Console;
 using Console.UI.Drawing;
+using Console.UI.IO;
 
 namespace Console.UI.Controls
 {
@@ -14,10 +15,16 @@ namespace Console.UI.Controls
     {
         public IView MainView { get; set; }
 
-        public void Run()
+        public Task Run()
         {
             MainView.SetAvailableArea(Area.GetConsoleDrawingArea());
             MainView.Render();
+            WndProc.Attach(this);
+            return new Task(() => {
+                while (!MainView.IsClosed)
+                {
+                }
+            });
         }
 
         public void Message(IMessage message)

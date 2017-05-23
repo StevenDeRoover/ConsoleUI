@@ -16,10 +16,6 @@ namespace Console.UI.Controls.InputControls
 
         public override void Message(IMessage message)
         {
-            if (message is KeyMessage)
-            {
-                var keyInfo = (message as KeyMessage).KeyInfo;
-            }
             base.Message(message);
         }
     }

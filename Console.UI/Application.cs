@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Console.UI.IO;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,17 +8,17 @@ using Console = System.Console;
 
 namespace Console.UI
 {
-    public abstract class Application
+    public static class Application
     {
+        [STAThread]
         public static void Run<T>(T applicationContext) where T : IApplicationContext, IFocusManager
         {
+            WndProc.Init();
             System.Console.CursorVisible = false;
-
-            applicationContext.Run();
-            while (true)
-            {
-                
-            }
+            Task.Run(async () =>
+            {    
+                await applicationContext.Run();
+            }).GetAwaiter().GetResult();
         }
     }
 }
