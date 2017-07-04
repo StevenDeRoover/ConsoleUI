@@ -1,0 +1,9 @@
+version: 1.0.0.{build}-alpha
+image: Visual Studio 2017
+build:
+  verbosity: minimal
+artifacts:
+- path: bin\Release\*.dll
+  name: Release
+- path: bin
+  name: bin
