@@ -8,7 +8,6 @@ using System.Threading;
 using Console = System.Console;
 using Console.UI.Drawing;
 using Console.UI.IO;
-using Console.UI.Controls.Internals;
 
 namespace Console.UI.Controls
 {
