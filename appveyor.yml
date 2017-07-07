@@ -6,4 +6,4 @@ artifacts:
 - path: '\Console.UI\bin\Release\'
   name: release
 - path: '\'
-  name: all
+  name: allcode
