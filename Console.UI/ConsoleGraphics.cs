@@ -31,14 +31,18 @@ namespace Console.UI
         internal ConsoleGraphics(UIElement uiElement)
         {
             _uiElement = uiElement;
-            _availableDrawingArea = _uiElement.GetDrawingArea();
+            _availableDrawingArea = _uiElement.AvailableDrawingArea;
         }
 
 
 
         public void FillRect(short x, short y, short width, short height, ConsoleColor backgroundColor)
         {
-            Native.WithNewBuffer(x, y, width, height, (point, charinfo) =>
+            var left = _availableDrawingArea.LeftTop.X + x;
+            var top = _availableDrawingArea.LeftTop.Y + y;
+            var theWidth = Math.Min(_availableDrawingArea.Size.Width.Amount.GetValueOrDefault(), width);
+            var theHeight = Math.Min(_availableDrawingArea.Size.Height.Amount.GetValueOrDefault(), height);
+            Native.WithNewBuffer((short)left, (short)top, theWidth, theHeight, (point, charinfo) =>
             {
                 charinfo.charData = System.Console.OutputEncoding.GetBytes(new char[] { ' ', (char)0 });
                 charinfo.attributes = 0;
@@ -66,13 +70,14 @@ namespace Console.UI
         {
             var x = _availableDrawingArea.LeftTop.X + left;
             var y = _availableDrawingArea.LeftTop.Y + top;
+            var theText = text ?? "";
             var width = (_availableDrawingArea.Size.Width.Amount.GetValueOrDefault() - left);
-            width = Math.Min(text.Length, width);
+            width = Math.Min((theText ?? "").Length, width);
             Native.WithLoadedBuffer((short)(x), (short)(y), (short)width, 1, (point, ci) =>
             {
-                if (point.X < text.Length)
+                if (point.X < theText.Length)
                 {
-                    ci.charData = System.Console.OutputEncoding.GetBytes(new char[] { text[point.X], (char)0 });
+                    ci.charData = System.Console.OutputEncoding.GetBytes(new char[] { theText[point.X], (char)0 });
                     ci = Native.SetForegroundColor(ci, color);
                 }
 

@@ -8,6 +8,16 @@ namespace Console.UI.Drawing
 {
     public class Area
     {
+        public Area()
+        {
+        }
+
+        public Area(short leftTopX, short leftTopY, short rightBottomX, short rightBottomY)
+        {
+            this.LeftTop = new Point(leftTopX, leftTopY);
+            this.RightBottom = new Point(rightBottomX, rightBottomY);
+        }
+
         public static Area GetConsoleDrawingArea()
         {
             return new Area()
@@ -18,7 +28,7 @@ namespace Console.UI.Drawing
                     Y = 0
                 },
                 RightBottom = new Point()
-                {   
+                {
                     X = (short)System.Console.WindowWidth,
                     Y = (short)System.Console.WindowHeight
                 }
@@ -34,11 +44,11 @@ namespace Console.UI.Drawing
                 {
                     Width = new Measurement
                     {
-                        Amount = (short)(LeftTop.X + RightBottom.X)
+                        Amount = (short)(RightBottom.X - LeftTop.X)
                     },
                     Height = new Measurement
                     {
-                        Amount = (short)(this.LeftTop.Y + this.RightBottom.Y)
+                        Amount = (short)(this.RightBottom.Y - this.LeftTop.Y)
                     }
                 };
             }

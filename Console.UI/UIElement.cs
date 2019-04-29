@@ -39,12 +39,23 @@ namespace Console.UI
         public Area GetDrawingArea()
         {
             var area = AvailableDrawingArea != null ? AvailableDrawingArea : Area.GetConsoleDrawingArea();
-            var drawingArea = new Area() { LeftTop = new Point(area.LeftTop.X, area.LeftTop.Y), RightBottom = new Point(area.RightBottom.X, area.RightBottom.Y) };
-            area.LeftTop.X += this.Margin.Left;
-            area.LeftTop.Y += this.Margin.Top;
-            area.RightBottom.X -= this.Margin.Right;
-            area.RightBottom.Y -= this.Margin.Bottom;
-            return area;
+            var drawingArea = new Area(area.LeftTop.X, area.LeftTop.Y, area.RightBottom.X, area.RightBottom.Y);
+            drawingArea.LeftTop.X += this.Margin.Left;
+            drawingArea.LeftTop.Y += this.Margin.Top;
+            drawingArea.RightBottom.X -= this.Margin.Right;
+            drawingArea.RightBottom.Y -= this.Margin.Bottom;
+            return drawingArea;
+        }
+
+        public Area GetClientArea()
+        {
+            var area = GetDrawingArea();
+            var drawingArea = new Area(area.LeftTop.X, area.LeftTop.Y, area.RightBottom.X, area.RightBottom.Y);
+            drawingArea.LeftTop.X += 1;
+            drawingArea.LeftTop.Y += 1;
+            drawingArea.RightBottom.X -= (short)(1 + this.Margin.Right);
+            drawingArea.RightBottom.Y -= (short)(1 + this.Margin.Bottom);
+            return drawingArea;
         }
 
         /// <summary>

@@ -12,9 +12,10 @@ namespace Console.UI.Controls.LayoutControls
     public class Panel : Control
     {
         private string _title;
+        private UIElement _child;
 
         public ConsoleColor BorderColor { get; set; } = ConsoleColor.White;
-        public UIElement Child { get; set; }
+        public UIElement Child { get { return _child; } set { _child = value; Render(); } }
 
         public string Title
         {
@@ -43,8 +44,9 @@ namespace Console.UI.Controls.LayoutControls
             var g = CreateGraphics();
             g.FillRect(0, 0, g.Width, g.Height, this.BackgroundColor);
             g.DrawRect(0, 0, g.Width, g.Height, this.BorderColor);
-                DrawTitle(g);
-            PropertyChanged += (sender, e) => {
+            DrawTitle(g);
+            PropertyChanged += (sender, e) =>
+            {
                 if (e.PropertyName == "Title" && sender == this)
                 {
                     //refresh top line first
@@ -55,13 +57,13 @@ namespace Console.UI.Controls.LayoutControls
             //g.DrawText(this.Title)
             if (Child != null)
             {
-                Child.AvailableDrawingArea = GetDrawingArea();
+                Child.AvailableDrawingArea = GetClientArea();
 
                 Child.Render();
             }
         }
 
-        protected int ReserveRightAreaTitle { get; set; } = 0; 
+        protected int ReserveRightAreaTitle { get; set; } = 0;
 
         protected virtual void DrawTitle(ConsoleGraphics g)
         {
@@ -80,7 +82,7 @@ namespace Console.UI.Controls.LayoutControls
             }
             text = $"{trailing}{text}";
             g.DrawText(1, 0, text, this.ForegroundColor);
-            
+
         }
     }
 }
