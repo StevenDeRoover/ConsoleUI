@@ -24,6 +24,13 @@ namespace Console.UI.Controls.LayoutControls
             //defaults
             this.Size = new Size { Width = new Drawing.Measurement { IsStretch = true }, Height = new Drawing.Measurement { IsStretch = true } };
         }
+
+        public override void Init()
+        {
+            base.Init();
+            if (Child != null) Child.Init();
+        }
+
         public override void Render()
         {
             var g = CreateGraphics();

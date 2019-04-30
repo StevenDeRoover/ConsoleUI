@@ -13,6 +13,7 @@ namespace Console.UI.Controls.InputControls
             var g = CreateGraphics();
             g.FillRect(0,0, g.Width, g.Height, this.BackgroundColor);
             g.DrawText(0, 0, this.Text, this.ForegroundColor);
+            base.Render();
         }
 
         public override void Message(IMessage message)

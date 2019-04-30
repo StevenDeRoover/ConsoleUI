@@ -29,7 +29,7 @@ namespace Console.UI.IO
 
                 Native.WithLoadedBuffer(msg.X, msg.Y, 1, 1, (pos, ci) => {
                     _previousPosition = new MousePositionInfo() { charInfo = ci, Point = new Point(msg.X, msg.Y) };
-                    ci = Native.SetBackgroundColor(ci, ConsoleColor.DarkBlue);
+                    ci = Native.SetBackgroundColor(ci, ConsoleColor.White);
                     return ci;
                 });
 

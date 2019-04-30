@@ -20,6 +20,7 @@ namespace Console.UI.Controls
         public Task Run()
         {
             MainView.SetAvailableArea(Area.GetConsoleDrawingArea());
+            MainView.Init();
             MainView.Render();
             OnRenderComplete(this, EventArgs.Empty);
             return new Task(() => {

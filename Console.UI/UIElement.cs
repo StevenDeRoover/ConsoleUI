@@ -10,6 +10,7 @@ namespace Console.UI
 {
     public interface IUIElement
     {
+        void Init();
         void Render();
 
         void Message(Console.UI.IMessage message);
@@ -23,8 +24,10 @@ namespace Console.UI
         public Drawing.Margin Margin { get; set; } = new Drawing.Margin();
         public Drawing.Margin Padding { get; set; } = new Drawing.Margin();
         public Area AvailableDrawingArea { get; set; }
+        protected bool IsInit { get; private set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
+        public event EventHandler OnRenderComplete;
 
 
         /// <summary>
@@ -58,11 +61,17 @@ namespace Console.UI
             return drawingArea;
         }
 
+        public virtual void Init()
+        {
+            this.IsInit = true;
+        }
+
         /// <summary>
         /// Render the UI Element
         /// </summary>
         public virtual void Render()
         {
+            this.OnRenderComplete?.Invoke(this, EventArgs.Empty);
         }
 
         public virtual void Message(IMessage message)
