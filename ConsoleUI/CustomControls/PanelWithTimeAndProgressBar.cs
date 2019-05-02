@@ -15,7 +15,7 @@ namespace ConsoleUI.CustomControls
         private int _progressBarValue;
         private ConsoleColor _progressColor = ConsoleColor.Green;
         private ConsoleColor _progressTextColor = ConsoleColor.Black;
-
+        Timer _timeTimer;
         public string Format { get; set; } = "HH:mm:ss";
         public ConsoleColor TimeColor { get; set; }
 
@@ -39,14 +39,13 @@ namespace ConsoleUI.CustomControls
                 RenderTime();
                 RenderProgressBar();
             }
-            base.Render();
         }
 
         private void RenderTime()
         {
             var g = CreateGraphics();
-            g.FillRect((short)(g.Width - Format.Length - 1), 0, (short)Format.Length, 1, BorderColor);
-            Timer t = new Timer(new TimerCallback((obj) =>
+            g.FillRect((short)(g.Width - Format.Length - 1), 0, (short)Format.Length, 1, ConsoleColor.White);
+            _timeTimer = new Timer(new TimerCallback((obj) =>
             {
                 DrawTime();
             }), null, 0, 1000);

@@ -30,9 +30,7 @@ namespace ConsoleUI.Screens
                     _childPanel.ProgressBarText = text + $" ({i}%)";
                     if (i % 4 == 0) { text = "\t" + text; }
                     _consoleWriter.WriteLine(text); _childPanel.ProgressBarValue = i;
-                    Thread.Sleep(500);
-                    
-                    
+                    Thread.Sleep(200);
                 }
             });
         }
