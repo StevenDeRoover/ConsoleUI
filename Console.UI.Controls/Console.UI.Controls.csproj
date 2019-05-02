@@ -43,6 +43,7 @@
     <Compile Include="ApplicationContext.cs" />
     <Compile Include="EventArgs\ClosingEventArgs.cs" />
     <Compile Include="InputControls\TextBox.cs" />
+    <Compile Include="LayoutControls\ConsoleWriter.cs" />
     <Compile Include="LayoutControls\Grid.cs" />
     <Compile Include="LayoutControls\Panel.cs" />
     <Compile Include="LayoutControls\View.cs" />

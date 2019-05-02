@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleUI.CustomControls
+namespace Console.UI.Controls.LayoutControls
 {
     public class ConsoleWriter : Panel
     {

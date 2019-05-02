@@ -45,6 +45,7 @@ namespace ConsoleUI
         [STAThread]
         static void Main(string[] args)
         {
+            System.Console.Title = "DCA Data Migration";
             System.Console.SetWindowSize(Math.Min(200, System.Console.LargestWindowWidth),    Math.Min(60, System.Console.LargestWindowHeight));
 
             Process p = Process.GetCurrentProcess();

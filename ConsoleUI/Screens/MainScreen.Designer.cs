@@ -14,8 +14,7 @@ namespace ConsoleUI.Screens
         private ConsoleWriter _consoleWriter;
         internal void InitializeComponent()
         {
-            _childPanel = new PanelWithTimeAndProgressBar {
-            };
+            _childPanel = new PanelWithTimeAndProgressBar();
             _childPanel.ProgressBarText = "";
             _childPanel.ProgressBarValue = 0;
             _childPanel.TimeColor = ConsoleColor.Blue;
@@ -23,7 +22,6 @@ namespace ConsoleUI.Screens
             _childPanel.ForegroundColor = ConsoleColor.White;
             _childPanel.BorderColor = ConsoleColor.White;
             _childPanel.Title = "DCA Data Migration";
-            //_childPanel.Title = " Test";
             this.Child = _childPanel;
             _consoleWriter = new ConsoleWriter();
             _childPanel.Child = _consoleWriter;
