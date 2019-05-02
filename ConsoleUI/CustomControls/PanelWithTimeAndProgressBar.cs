@@ -14,6 +14,7 @@ namespace ConsoleUI.CustomControls
         private string _progressBarText;
         private int _progressBarValue;
         private ConsoleColor _progressColor = ConsoleColor.Green;
+        private ConsoleColor _progressTextColor = ConsoleColor.Black;
 
         public string Format { get; set; } = "HH:mm:ss";
         public ConsoleColor TimeColor { get; set; }
@@ -27,12 +28,18 @@ namespace ConsoleUI.CustomControls
 
         public ConsoleColor ProgressColor { get { return _progressColor; } set { _progressColor = value; RenderProgressBar(); } }
 
+        public ConsoleColor ProgressTextColor { get { return _progressTextColor; } set { _progressTextColor = value; RenderProgressBar(); } }
+
         public override void Render()
         {
-            base.ReserveRightAreaTitle = Format.Length + 1;
+            if (IsInit)
+            {
+                base.ReserveRightAreaTitle = Format.Length + 1;
+                base.Render();
+                RenderTime();
+                RenderProgressBar();
+            }
             base.Render();
-            RenderTime();
-            RenderProgressBar();
         }
 
         private void RenderTime()
@@ -55,7 +62,7 @@ namespace ConsoleUI.CustomControls
                 var g = CreateGraphics();
 
                 var progressBarWidth = (g.Width - 2);
-                
+
                 g.FillRect(1, (short)(g.Height - 1), (short)(g.Width - 2), 1, ConsoleColor.Gray);
 
                 {
@@ -72,7 +79,7 @@ namespace ConsoleUI.CustomControls
                     //text
                     var progressBarText = ProgressBarText.Substring(0, Math.Min(ProgressBarText.Length, progressBarWidth));
                     var paddingLeft = (int)((progressBarWidth - progressBarText.Length) / 2);
-                    g.DrawText((short)(paddingLeft + 1), (short)(g.Height - 1), progressBarText, this.ForegroundColor);
+                    g.DrawText((short)(paddingLeft + 1), (short)(g.Height - 1), progressBarText, _progressTextColor);
                 }
             }
         }

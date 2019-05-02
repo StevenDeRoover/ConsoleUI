@@ -16,6 +16,25 @@ namespace ConsoleUI.Screens
         public MainScreen()
         {
             InitializeComponent();
+            OnRenderComplete += MainScreen_OnRenderComplete;
+        }
+
+        private void MainScreen_OnRenderComplete(object sender, EventArgs e)
+        {
+            Task.Run(() =>
+            {
+                for (var i = 1; i <= 100; i++)
+                {
+                    _consoleWriter.ForegroundColor = (i % 4 == 0) ? ConsoleColor.Yellow : ConsoleColor.White;
+                    var text = "Uploading file " + i;
+                    _childPanel.ProgressBarText = text + $" ({i}%)";
+                    if (i % 4 == 0) { text = "\t" + text; }
+                    _consoleWriter.WriteLine(text); _childPanel.ProgressBarValue = i;
+                    Thread.Sleep(500);
+                    
+                    
+                }
+            });
         }
 
         public override void Message(IMessage message)
@@ -27,13 +46,6 @@ namespace ConsoleUI.Screens
                 if ((msg.Modifier & Modifiers.LeftCtrl) > 0 && msg.KeyCode == ConsoleKey.F5)
                 {
                     this.Close();
-                }
-                if (msg.KeyCode == ConsoleKey.F1)
-                {
-                    var textbox = new TextBox();
-                    textbox.Text = "Test qdsf dqssdfqfq qsdfqdfs qsdf qsdf qsdf qsdfqsdfqsf qsdf qdfsqsdf qsdf qsdf qsdf Test qdsf dqssdfqfq qsdfqdfs qsdf qsdf qsdf qsdfqsdfqsf qsdf qdfsqsdf qsdf qsdf qsdf Test qdsf dqssdfqfq qsdfqdfs qsdf qsdf qsdf qsdfqsdfqsf qsdf qdfsqsdf qsdf qsdf qsdf Test qdsf dqssdfqfq qsdfqdfs qsdf qsdf qsdf qsdfqsdfqsf qsdf qdfsqsdf qsdf qsdf qsdf Test qdsf dqssdfqfq qsdfqdfs qsdf qsdf qsdf qsdfqsdfqsf qsdf qdfsqsdf qsdf qsdf qsdf Test qdsf dqssdfqfq qsdfqdfs qsdf qsdf qsdf qsdfqsdfqsf qsdf qdfsqsdf qsdf qsdf qsdf Test qdsf dqssdfqfq qsdfqdfs qsdf qsdf qsdf qsdfqsdfqsf qsdf qdfsqsdf qsdf qsdf qsdf Test qdsf dqssdfqfq qsdfqdfs qsdf qsdf qsdf qsdfqsdfqsf qsdf qdfsqsdf qsdf qsdf qsdf Test qdsf dqssdfqfq qsdfqdfs qsdf qsdf qsdf qsdfqsdfqsf qsdf qdfsqsdf qsdf qsdf qsdf Test qdsf dqssdfqfq qsdfqdfs qsdf qsdf qsdf qsdfqsdfqsf qsdf qdfsqsdf qsdf qsdf qsdf Test qdsf dqssdfqfq qsdfqdfs qsdf qsdf qsdf qsdfqsdfqsf qsdf qdfsqsdf qsdf qsdf qsdf Test qdsf dqssdfqfq qsdfqdfs qsdf qsdf qsdf qsdfqsdfqsf qsdf qdfsqsdf qsdf qsdf qsdf Test qdsf dqssdfqfq qsdfqdfs qsdf qsdf qsdf qsdfqsdfqsf qsdf qdfsqsdf qsdf qsdf qsdf Test qdsf dqssdfqfq qsdfqdfs qsdf qsdf qsdf qsdfqsdfqsf qsdf qdfsqsdf qsdf qsdf qsdf Test qdsf dqssdfqfq qsdfqdfs qsdf qsdf qsdf qsdfqsdfqsf qsdf qdfsqsdf qsdf qsdf qsdf Test qdsf dqssdfqfq qsdfqdfs qsdf qsdf qsdf qsdfqsdfqsf qsdf qdfsqsdf qsdf qsdf qsdf Test qdsf dqssdfqfq qsdfqdfs qsdf qsdf qsdf qsdfqsdfqsf qsdf qdfsqsdf qsdf qsdf qsdf Test qdsf dqssdfqfq qsdfqdfs qsdf qsdf qsdf qsdfqsdfqsf qsdf qdfsqsdf qsdf qsdf qsdf Test qdsf dqssdfqfq qsdfqdfs qsdf qsdf qsdf qsdfqsdfqsf qsdf qdfsqsdf qsdf qsdf qsdf Test qdsf dqssdfqfq qsdfqdfs qsdf qsdf qsdf qsdfqsdfqsf qsdf qdfsqsdf qsdf qsdf qsdf Test qdsf dqssdfqfq qsdfqdfs qsdf qsdf qsdf qsdfqsdfqsf qsdf qdfsqsdf qsdf qsdf qsdf Test qdsf dqssdfqfq qsdfqdfs qsdf qsdf qsdf qsdfqsdfqsf qsdf qdfsqsdf qsdf qsdf qsdf Test qdsf dqssdfqfq qsdfqdfs qsdf qsdf qsdf qsdfqsdfqsf qsdf qdfsqsdf qsdf qsdf qsdf Test qdsf dqssdfqfq qsdfqdfs qsdf qsdf qsdf qsdfqsdfqsf qsdf qdfsqsdf qsdf qsdf qsdf Test qdsf dqssdfqfq qsdfqdfs qsdf qsdf qsdf qsdfqsdfqsf qsdf qdfsqsdf qsdf qsdf qsdf Test qdsf dqssdfqfq qsdfqdfs qsdf qsdf qsdf qsdfqsdfqsf qsdf qdfsqsdf qsdf qsdf qsdf Test qdsf dqssdfqfq qsdfqdfs qsdf qsdf qsdf qsdfqsdfqsf qsdf qdfsqsdf qsdf qsdf qsdf Test qdsf dqssdfqfq qsdfqdfs qsdf qsdf qsdf qsdfqsdfqsf qsdf qdfsqsdf qsdf qsdf qsdf ";
-                    textbox.BackgroundColor = ConsoleColor.Red;
-                    _childPanel.Child = textbox;
                 }
             }
         }

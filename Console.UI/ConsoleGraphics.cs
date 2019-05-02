@@ -34,8 +34,6 @@ namespace Console.UI
             _availableDrawingArea = _uiElement.AvailableDrawingArea;
         }
 
-
-
         public void FillRect(short x, short y, short width, short height, ConsoleColor backgroundColor)
         {
             var left = _availableDrawingArea.LeftTop.X + x;
@@ -66,23 +64,40 @@ namespace Console.UI
             };
         }
 
+        public void Move(Area from, Point to)
+        {
+            short leftFrom = (short)(_availableDrawingArea.LeftTop.X + from.LeftTop.X);
+            short topFrom = (short)(_availableDrawingArea.LeftTop.Y + from.LeftTop.Y);
+            short width = Math.Min(_availableDrawingArea.Size.Width.Amount.GetValueOrDefault(), from.Size.Width.Amount.GetValueOrDefault());
+            short height =(short)( Math.Min(_availableDrawingArea.Size.Height.Amount.GetValueOrDefault(), from.Size.Width.Amount.GetValueOrDefault()) - 1);
+
+            short leftTo = (short)(_availableDrawingArea.LeftTop.X + to.X);
+            short topTo = (short)(_availableDrawingArea.LeftTop.Y + to.Y);
+
+            Native.Move(leftFrom, topFrom, width, height, leftTo, topTo);
+        }
+
         public void DrawText(short left, int top, string text, ConsoleColor color)
         {
-            var x = _availableDrawingArea.LeftTop.X + left;
-            var y = _availableDrawingArea.LeftTop.Y + top;
-            var theText = text ?? "";
-            var width = (_availableDrawingArea.Size.Width.Amount.GetValueOrDefault() - left);
-            width = Math.Min((theText ?? "").Length, width);
-            Native.WithLoadedBuffer((short)(x), (short)(y), (short)width, 1, (point, ci) =>
+            if (!string.IsNullOrEmpty(text))
             {
-                if (point.X < theText.Length)
-                {
-                    ci.charData = System.Console.OutputEncoding.GetBytes(new char[] { theText[point.X], (char)0 });
-                    ci = Native.SetForegroundColor(ci, color);
-                }
 
-                return ci;
-            });
+                var x = _availableDrawingArea.LeftTop.X + left;
+                var y = _availableDrawingArea.LeftTop.Y + top;
+                var theText = text ?? "";
+                var width = (_availableDrawingArea.Size.Width.Amount.GetValueOrDefault() - left);
+                width = Math.Min((theText ?? "").Length, width);
+                Native.WithLoadedBuffer((short)(x), (short)(y), (short)width, 1, (point, ci) =>
+                {
+                    if (point.X < theText.Length)
+                    {
+                        ci.charData = System.Console.OutputEncoding.GetBytes(new char[] { theText[point.X], (char)0 });
+                        ci = Native.SetForegroundColor(ci, color);
+                    }
+
+                    return ci;
+                });
+            }
         }
 
         public void DrawHorizontalLine(short x, short line, short width, ConsoleColor color)

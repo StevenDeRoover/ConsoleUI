@@ -10,21 +10,38 @@ namespace Console.UI
 {
     public static class Application
     {
-        private static MouseIO _mouseIO = new MouseIO();
+        public static bool AttachMouse { get; set; } = true;
+
+        private static MouseIO _mouseIO;
+
         [STAThread]
         public static void Run<T>(T applicationContext) where T : IApplicationContext, IFocusManager
         {
+            if (AttachMouse)
+            {
+                _mouseIO = new MouseIO();
+            }
             System.Console.CursorVisible = false;
             WndProc.Init();
             applicationContext.RenderComplete += (obj, e) =>
             {
-                WndProc.Attach(_mouseIO);
+                if (AttachMouse)
+                {
+                    WndProc.Attach(_mouseIO);
+                }
                 WndProc.Attach(applicationContext);
             };
             
             Task.Run(async () =>
-            {    
-                await applicationContext.Run();
+            {
+                try
+                {
+                    await applicationContext.Run();
+                }
+                catch (Exception ex)
+                {
+                    throw;
+                }
             }).GetAwaiter().GetResult();
         }
     }

@@ -14,6 +14,7 @@ namespace Console.UI.Controls.LayoutControls
         private string _title;
         private UIElement _child;
 
+        public bool DrawBorder { get; set; } = true;
         public ConsoleColor BorderColor { get; set; } = ConsoleColor.White;
         public UIElement Child { get { return _child; } set { _child = value; Render(); } }
 
@@ -39,28 +40,42 @@ namespace Console.UI.Controls.LayoutControls
 
         public EnumTitlePosition TitlePosition { get; set; }
 
+        public override void Init()
+        {
+            base.Init();
+            if (Child != null) Child.Init();
+        }
+
         public override void Render()
         {
-            var g = CreateGraphics();
-            g.FillRect(0, 0, g.Width, g.Height, this.BackgroundColor);
-            g.DrawRect(0, 0, g.Width, g.Height, this.BorderColor);
-            DrawTitle(g);
-            PropertyChanged += (sender, e) =>
+            if (IsInit)
             {
-                if (e.PropertyName == "Title" && sender == this)
+                var g = CreateGraphics();
+                g.FillRect(0, 0, g.Width, g.Height, this.BackgroundColor);
+                if (DrawBorder)
                 {
+                    g.DrawRect(0, 0, g.Width, g.Height, this.BorderColor);
+                    DrawTitle(g);
+                }
+                
+                PropertyChanged += (sender, e) =>
+                {
+                    if (e.PropertyName == "Title" && sender == this)
+                    {
                     //refresh top line first
                     g.DrawHorizontalLine(1, 0, (short)(g.Width - 2), BorderColor);
-                    DrawTitle(CreateGraphics());
-                }
-            };
-            //g.DrawText(this.Title)
-            if (Child != null)
-            {
-                Child.AvailableDrawingArea = GetClientArea();
+                        DrawTitle(CreateGraphics());
+                    }
+                };
+                //g.DrawText(this.Title)
+                if (Child != null)
+                {
+                    Child.AvailableDrawingArea = GetClientArea();
 
-                Child.Render();
+                    Child.Render();
+                }
             }
+            base.Render();
         }
 
         protected int ReserveRightAreaTitle { get; set; } = 0;

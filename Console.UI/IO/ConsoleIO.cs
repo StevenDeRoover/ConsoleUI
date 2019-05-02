@@ -202,7 +202,37 @@ namespace Console.UI.IO
             return charInfo;
         }
 
-        private static void With(short x, short y, short width, short height, Func<COORD, CHAR_INFO, CHAR_INFO> doAction, bool loadFromScreen)
+        public static void Move(short fromX, short fromY, short fromWidth, short fromHeight, short toX, short toY)
+        {
+            IntPtr buffer = IntPtr.Zero;
+            try
+            {
+                var stdHandle = GetConsoleOutputHandle();
+                buffer = Marshal.AllocHGlobal(fromWidth * fromHeight * Marshal.SizeOf(typeof(CHAR_INFO)));
+                SMALL_RECT rect = new SMALL_RECT() { Left = fromX, Top = fromY, Right = (short)(fromX + fromWidth), Bottom = (short)(fromY + fromHeight) };
+                COORD leftTop = new COORD() { X = 0, Y = 0 };
+                COORD size = new COORD() { X = (short)(fromWidth), Y = fromHeight };
+
+                if (!ReadConsoleOutput(stdHandle.DangerousGetHandle(), buffer, size, leftTop, ref rect))
+                {
+                    // 'Not enough storage is available to process this command' may be raised for buffer size > 64K (see ReadConsoleOutput doc.)
+                    throw new Win32Exception(Marshal.GetLastWin32Error());
+                }
+                rect.Left = toX;
+                rect.Top = toY;
+                WriteConsoleOutput(stdHandle.DangerousGetHandle(), buffer, size, leftTop, ref rect);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                Marshal.FreeHGlobal(buffer);
+            }
+        }
+
+        private static void With(short x, short y, short width, short height, Func<COORD, CHAR_INFO, CHAR_INFO> doAction, bool loadFromScreen, bool writeToBuffer = true)
         {
             if (x + width > System.Console.WindowWidth)
             {
@@ -239,8 +269,10 @@ namespace Console.UI.IO
                         LongPtr += Marshal.SizeOf(typeof(CHAR_INFO));
                     }
                 }
-
-                Native.WriteConsoleOutput(stdHandle.DangerousGetHandle(), buffer, size, leftTop, ref rect);
+                if (writeToBuffer)
+                {
+                    Native.WriteConsoleOutput(stdHandle.DangerousGetHandle(), buffer, size, leftTop, ref rect);
+                }
             }
             catch (Exception)
             {
@@ -252,14 +284,14 @@ namespace Console.UI.IO
             }
         }
 
-        internal static void WithNewBuffer(short x, short y, short width, short height, Func<COORD, CHAR_INFO, CHAR_INFO> doAction)
+        internal static void WithNewBuffer(short x, short y, short width, short height, Func<COORD, CHAR_INFO, CHAR_INFO> doAction, bool writeToBuffer = true)
         {
-            With(x, y, width, height, doAction, false);
+            With(x, y, width, height, doAction, false, writeToBuffer);
         }
 
-        public static void WithLoadedBuffer(short x, short y, short width, short height, Func<COORD, CHAR_INFO, CHAR_INFO> doAction)
+        public static void WithLoadedBuffer(short x, short y, short width, short height, Func<COORD, CHAR_INFO, CHAR_INFO> doAction, bool writeToBuffer = true)
         {
-            With(x, y, width, height, doAction, true);
+            With(x, y, width, height, doAction, true, writeToBuffer);
         }
         #endregion
     }

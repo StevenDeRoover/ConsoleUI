@@ -40,6 +40,7 @@ namespace Console.UI.Controls.LayoutControls
                 Child.AvailableDrawingArea = GetDrawingArea();
                 Child.Render();
             }
+            base.Render();
         }
 
         public void SetAvailableArea(Area area)

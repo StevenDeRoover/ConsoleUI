@@ -45,6 +45,8 @@ namespace ConsoleUI
         [STAThread]
         static void Main(string[] args)
         {
+            System.Console.SetWindowSize(Math.Min(200, System.Console.LargestWindowWidth),    Math.Min(60, System.Console.LargestWindowHeight));
+
             Process p = Process.GetCurrentProcess();
             var windowLong = GetWindowLong(p.MainWindowHandle, GWL_STYLE).ToInt32();
 
@@ -57,7 +59,7 @@ namespace ConsoleUI
             //DeleteMenu(GetSystemMenu(p.MainWindowHandle, false), 0, MF_BYCOMMAND);
             //DeleteMenu(GetSystemMenu(p.MainWindowHandle, false), 1, MF_BYCOMMAND);
             //DrawMenuBar(p.MainWindowHandle);
-            System.Console.CursorVisible = false;
+            Application.AttachMouse = false;
             Application.Run(new ApplicationContext { MainView = new MainScreen() });
         }
     }
